@@ -32,17 +32,7 @@ export default function Header() {
     <header className="header">
       <div className="header__container">
         <Link to="/" className="header__logo" onClick={closeMenu}>
-          <div className="header__logo-mark">
-            <svg viewBox="0 0 32 32" fill="none">
-              <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2"/>
-              <path d="M10 16c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              <circle cx="16" cy="16" r="2" fill="currentColor"/>
-            </svg>
-          </div>
-          <div className="header__logo-text">
-            <span className="header__logo-name">Федерация ПМП</span>
-            <span className="header__logo-sub">Превентивная медицина</span>
-          </div>
+          <img src="/logo.png" alt="Федерация специалистов превентивной медицины и питания" className="header__logo-img" />
         </Link>
 
         <button

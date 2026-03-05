@@ -7,11 +7,7 @@ export default function Footer() {
         <div className="footer__top">
           <div className="footer__brand">
             <div className="footer__logo">
-              <svg viewBox="0 0 32 32" fill="none" width="36" height="36">
-                <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2"/>
-                <path d="M10 16c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="16" cy="16" r="2" fill="currentColor"/>
-              </svg>
+              <img src="/logo.png" alt="Федерация ПМП" className="footer__logo-img" />
             </div>
             <p className="footer__org-name">
               Автономная некоммерческая организация<br />
