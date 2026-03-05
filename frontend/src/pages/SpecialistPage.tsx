@@ -8,7 +8,7 @@ import type { UserProfile } from '../types/profile';
 function DefaultAvatarLarge() {
   return (
     <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="specialist-detail__avatar-svg">
-      <rect width="200" height="200" rx="20" fill="#e9ffdd" />
+      <rect width="200" height="200" rx="20" fill="#edeae5" />
       <circle cx="100" cy="75" r="35" fill="#a2bb94" />
       <ellipse cx="100" cy="155" rx="55" ry="40" fill="#a2bb94" />
     </svg>

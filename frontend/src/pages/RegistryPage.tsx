@@ -7,7 +7,7 @@ import type { UserProfile } from '../types/profile';
 function DefaultAvatar() {
   return (
     <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="specialist-card__avatar-svg">
-      <rect width="120" height="120" rx="60" fill="#e9ffdd" />
+      <rect width="120" height="120" rx="60" fill="#edeae5" />
       <circle cx="60" cy="45" r="20" fill="#a2bb94" />
       <ellipse cx="60" cy="95" rx="35" ry="25" fill="#a2bb94" />
     </svg>
