@@ -220,13 +220,12 @@ export default function RegistryPage() {
                             </div>
                           )}
                         </div>
-                        {/* Rating Circle on Card */}
-                        <div className="specialist-card__rating">
-                          <div className={`specialist-card__rating-circle ${specialist.ratingsCount > 0 ? '' : 'specialist-card__rating-circle--empty'}`}>
-                            <span className="specialist-card__rating-value">
-                              {specialist.ratingsCount > 0 ? specialist.averageRating.toFixed(1) : '\u2014'}
-                            </span>
-                          </div>
+                        {/* Verification Badge */}
+                        <div className="specialist-card__verification" title="Верифицированный специалист">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="specialist-card__verification-icon">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                          </svg>
                         </div>
                       </Link>
                     ))}

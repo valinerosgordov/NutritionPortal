@@ -23,7 +23,7 @@ const categories = [
   },
   {
     number: '02',
-    title: 'Центрам оздоровления',
+    title: 'Центрам здоровья',
     subtitle: 'Wellness-центры, SPA, санатории, клиники',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

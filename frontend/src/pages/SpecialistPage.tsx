@@ -25,7 +25,6 @@ export default function SpecialistPage() {
 
   const [showContacts, setShowContacts] = useState(false);
 
-  const [ratingScore, setRatingScore] = useState<number>(0);
   const [ratingComment, setRatingComment] = useState('');
   const [ratingSubmitting, setRatingSubmitting] = useState(false);
   const [ratingError, setRatingError] = useState('');
@@ -49,8 +48,8 @@ export default function SpecialistPage() {
 
   const handleSubmitRating = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId || ratingScore < 1 || ratingScore > 10) {
-      setRatingError('Выберите оценку от 1 до 10');
+    if (!userId || !ratingComment.trim()) {
+      setRatingError('Напишите отзыв');
       return;
     }
     setRatingSubmitting(true);
@@ -58,17 +57,16 @@ export default function SpecialistPage() {
     setRatingSuccess('');
     try {
       await addRating(userId, {
-        score: ratingScore,
-        comment: ratingComment.trim() || undefined,
+        score: 5,
+        comment: ratingComment.trim(),
       });
-      setRatingSuccess('Ваша оценка успешно добавлена!');
-      setRatingScore(0);
+      setRatingSuccess('Ваш отзыв успешно добавлен!');
       setRatingComment('');
       // Reload specialist to get updated ratings
       const { data } = await getSpecialist(userId);
       setSpecialist(data);
     } catch {
-      setRatingError('Ошибка при отправке оценки. Возможно, вы уже оценили этого специалиста.');
+      setRatingError('Ошибка при отправке отзыва. Возможно, вы уже оставляли отзыв.');
     } finally {
       setRatingSubmitting(false);
     }
@@ -109,9 +107,6 @@ export default function SpecialistPage() {
   const bioBullets = specialist.bio
     ? specialist.bio.split('. ').filter((s) => s.trim().length > 0)
     : [];
-
-  const hasRating = specialist.ratingsCount > 0;
-  const ratingDisplay = hasRating ? specialist.averageRating.toFixed(1) : '\u2014';
 
   return (
     <div className="page-specialist-detail">
@@ -204,13 +199,15 @@ export default function SpecialistPage() {
                 )}
               </div>
 
-              {/* Rating Circle */}
-              <div className="specialist-detail__rating-area">
-                <div className={`specialist-rating-circle ${hasRating ? '' : 'specialist-rating-circle--empty'}`}>
-                  <span className="specialist-rating-circle__value">{ratingDisplay}</span>
-                  <span className="specialist-rating-circle__label">
-                    {hasRating ? `${specialist.ratingsCount} ${getRatingsWord(specialist.ratingsCount)}` : 'Нет оценок'}
-                  </span>
+              {/* Verification Badge */}
+              <div className="specialist-detail__verification">
+                <div className="specialist-verification-badge">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="32" height="32">
+                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  <span className="specialist-verification-badge__label">Верифицирован</span>
+                  <span className="specialist-verification-badge__text">Образование и деятельность соответствуют стандартам Федерации</span>
                 </div>
               </div>
             </div>
@@ -371,44 +368,26 @@ export default function SpecialistPage() {
         </section>
       </div>
 
-      {/* Ratings Section */}
+      {/* Reviews Section */}
       <section className="section section--light">
         <div className="container">
           <div className="rating-section">
-            <h2 className="h2">Оценки специалиста</h2>
+            <h2 className="h2">Отзывы о специалисте</h2>
 
-            {/* Add Rating Form */}
+            {/* Add Review Form */}
             {isAuthenticated && user?.userId !== specialist.userId ? (
               <div className="rating-section__form-wrapper">
-                <h3 className="rating-section__form-title">Оставить оценку</h3>
+                <h3 className="rating-section__form-title">Оставить отзыв</h3>
                 <form className="rating-form" onSubmit={handleSubmitRating}>
-                  <div className="rating-input">
-                    <label className="rating-input__label">Ваша оценка:</label>
-                    <div className="rating-input__numbers">
-                      {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          className={`rating-input__number ${ratingScore === num ? 'rating-input__number--active' : ''}`}
-                          onClick={() => setRatingScore(num)}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="rating-input__scale-labels">
-                      <span>Низкая</span>
-                      <span>Высокая</span>
-                    </div>
-                  </div>
                   <div className="form-group">
-                    <label className="form-label">Комментарий (необязательно)</label>
+                    <label className="form-label">Ваш отзыв</label>
                     <textarea
                       className="form-input form-input--textarea"
                       placeholder="Поделитесь вашим опытом работы с данным специалистом..."
                       value={ratingComment}
                       onChange={(e) => setRatingComment(e.target.value)}
-                      rows={3}
+                      rows={4}
+                      required
                     />
                   </div>
                   {ratingError && <div className="alert alert--error">{ratingError}</div>}
@@ -416,36 +395,30 @@ export default function SpecialistPage() {
                   <button
                     type="submit"
                     className="btn btn--primary"
-                    disabled={ratingSubmitting || ratingScore === 0}
+                    disabled={ratingSubmitting || !ratingComment.trim()}
                   >
-                    {ratingSubmitting ? 'Отправка...' : 'Отправить оценку'}
+                    {ratingSubmitting ? 'Отправка...' : 'Отправить отзыв'}
                   </button>
                 </form>
               </div>
             ) : !isAuthenticated ? (
               <div className="rating-section__auth-notice">
                 <p>
-                  <Link to="/login">Войдите</Link> в систему, чтобы оставить оценку специалисту.
+                  <Link to="/login">Войдите</Link> в систему, чтобы оставить отзыв о специалисте.
                 </p>
               </div>
             ) : null}
 
-            {/* Ratings List */}
-            {specialist.ratings && specialist.ratings.length > 0 ? (
+            {/* Reviews List */}
+            {specialist.ratings && specialist.ratings.filter(r => r.comment).length > 0 ? (
               <div className="rating-list">
                 <h3 className="rating-list__title">
-                  Все оценки ({specialist.ratings.length})
+                  Отзывы ({specialist.ratings.filter(r => r.comment).length})
                 </h3>
-                {specialist.ratings.map((rating) => (
+                {specialist.ratings.filter(r => r.comment).map((rating) => (
                   <div className="rating-list__item" key={rating.id}>
-                    <div className="rating-list__item-score">
-                      <span className="rating-list__score-value">{rating.score}</span>
-                      <span className="rating-list__score-max">/10</span>
-                    </div>
                     <div className="rating-list__item-content">
-                      {rating.comment && (
-                        <p className="rating-list__item-comment">{rating.comment}</p>
-                      )}
+                      <p className="rating-list__item-comment">{rating.comment}</p>
                       <span className="rating-list__item-date">{formatDate(rating.createdAt)}</span>
                     </div>
                   </div>
@@ -453,7 +426,7 @@ export default function SpecialistPage() {
               </div>
             ) : (
               <div className="rating-section__empty">
-                <p>Пока нет оценок для этого специалиста.</p>
+                <p>Пока нет отзывов для этого специалиста.</p>
               </div>
             )}
           </div>
@@ -476,13 +449,4 @@ export default function SpecialistPage() {
       </section>
     </div>
   );
-}
-
-function getRatingsWord(count: number): string {
-  const lastTwo = count % 100;
-  const lastOne = count % 10;
-  if (lastTwo >= 11 && lastTwo <= 19) return 'оценок';
-  if (lastOne === 1) return 'оценка';
-  if (lastOne >= 2 && lastOne <= 4) return 'оценки';
-  return 'оценок';
 }
