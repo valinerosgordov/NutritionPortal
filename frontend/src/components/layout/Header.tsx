@@ -32,7 +32,7 @@ export default function Header() {
     <header className="header">
       <div className="header__container">
         <Link to="/" className="header__logo" onClick={closeMenu}>
-          <img src="/logo.png" alt="Федерация специалистов превентивной медицины и питания" className="header__logo-img" />
+          <img src="/logo.png" alt="Федерация специалистов превентивного здоровья и питания" className="header__logo-img" />
         </Link>
 
         <button

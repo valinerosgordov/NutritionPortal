@@ -14,6 +14,7 @@ public class PhotoService(AppDbContext dbContext, IConfiguration configuration) 
     private static readonly Error FileTooLarge = new("Photo.TooLarge", "File size exceeds the maximum allowed (5 MB).");
 
     private static readonly HashSet<string> AllowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
+    private static readonly HashSet<string> AllowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
 
     public async Task<Result<string>> UploadPhotoAsync(string userId, IFormFile file, CancellationToken ct = default)
     {
@@ -22,7 +23,7 @@ public class PhotoService(AppDbContext dbContext, IConfiguration configuration) 
             return FileTooLarge;
 
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (!AllowedExtensions.Contains(extension))
+        if (!AllowedExtensions.Contains(extension) || !AllowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
             return InvalidFileType;
 
         var profile = await dbContext.UserProfiles
@@ -38,9 +39,13 @@ public class PhotoService(AppDbContext dbContext, IConfiguration configuration) 
         // Delete old photo if exists
         if (!string.IsNullOrEmpty(profile.PhotoUrl))
         {
-            var oldPath = Path.Combine("wwwroot", profile.PhotoUrl.TrimStart('/'));
-            if (File.Exists(oldPath))
-                File.Delete(oldPath);
+            try
+            {
+                var oldPath = Path.Combine("wwwroot", profile.PhotoUrl.TrimStart('/'));
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
+            }
+            catch (IOException) { /* best effort cleanup */ }
         }
 
         var fileName = $"{userId}_{Guid.NewGuid()}{extension}";

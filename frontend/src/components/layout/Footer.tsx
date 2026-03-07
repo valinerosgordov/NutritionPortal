@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="footer__top">
           <div className="footer__brand">
             <div className="footer__logo">
-              <img src="/logo.png" alt="Федерация ПМП" className="footer__logo-img" />
+              <img src="/logo.png" alt="Федерация специалистов превентивного здоровья и питания" className="footer__logo-img" />
             </div>
             <p className="footer__org-name">
               Автономная некоммерческая организация<br />

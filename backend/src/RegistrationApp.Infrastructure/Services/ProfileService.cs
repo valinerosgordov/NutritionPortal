@@ -16,6 +16,8 @@ public class ProfileService(AppDbContext dbContext) : IProfileService
     private static readonly Error FileTooLarge = new("Diploma.TooLarge", "File size exceeds 10 MB.");
 
     private static readonly HashSet<string> AllowedDiplomaExtensions = [".jpg", ".jpeg", ".png", ".webp", ".pdf"];
+    private static readonly HashSet<string> AllowedDiplomaMimeTypes =
+        ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 
     public async Task<Result<UserProfileDto>> GetProfileAsync(string userId, CancellationToken ct = default)
     {
@@ -128,9 +130,13 @@ public class ProfileService(AppDbContext dbContext) : IProfileService
 
         if (!string.IsNullOrEmpty(entry.DiplomaUrl))
         {
-            var filePath = Path.Combine("wwwroot", entry.DiplomaUrl.TrimStart('/'));
-            if (File.Exists(filePath))
-                File.Delete(filePath);
+            try
+            {
+                var filePath = Path.Combine("wwwroot", entry.DiplomaUrl.TrimStart('/'));
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
+            catch (IOException) { /* best effort cleanup */ }
         }
 
         dbContext.EducationEntries.Remove(entry);
@@ -146,7 +152,7 @@ public class ProfileService(AppDbContext dbContext) : IProfileService
             return FileTooLarge;
 
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (!AllowedDiplomaExtensions.Contains(extension))
+        if (!AllowedDiplomaExtensions.Contains(extension) || !AllowedDiplomaMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
             return InvalidFileType;
 
         var profile = await dbContext.UserProfiles
@@ -168,9 +174,13 @@ public class ProfileService(AppDbContext dbContext) : IProfileService
 
         if (!string.IsNullOrEmpty(entry.DiplomaUrl))
         {
-            var oldPath = Path.Combine("wwwroot", entry.DiplomaUrl.TrimStart('/'));
-            if (File.Exists(oldPath))
-                File.Delete(oldPath);
+            try
+            {
+                var oldPath = Path.Combine("wwwroot", entry.DiplomaUrl.TrimStart('/'));
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
+            }
+            catch (IOException) { /* best effort cleanup */ }
         }
 
         var fileName = $"{userId}_{educationId}_{Guid.NewGuid()}{extension}";
