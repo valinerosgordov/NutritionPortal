@@ -9,6 +9,7 @@ export default function AdminUserDetailPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [photoError, setPhotoError] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -85,11 +86,12 @@ export default function AdminUserDetailPage() {
             <div className="profile-layout">
               <div className="profile-photo-section">
                 <div className="profile-photo">
-                  {profile.photoUrl ? (
+                  {profile.photoUrl && !photoError ? (
                     <img
                       src={`${API_BASE}${profile.photoUrl}`}
                       alt="Фото профиля"
                       className="profile-photo__img"
+                      onError={() => setPhotoError(true)}
                     />
                   ) : (
                     <div className="profile-photo__placeholder">

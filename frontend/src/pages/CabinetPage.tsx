@@ -10,6 +10,7 @@ export default function CabinetPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [photoError, setPhotoError] = useState(false);
 
   const [form, setForm] = useState<UpdateProfileRequest>({
     firstName: null,
@@ -82,6 +83,7 @@ export default function CabinetPage() {
     try {
       const { data } = await uploadPhoto(file);
       setProfile((prev) => prev ? { ...prev, photoUrl: data.photoUrl } : null);
+      setPhotoError(false);
       setSuccess('Фото загружено');
       setTimeout(() => setSuccess(''), 3000);
     } catch {
@@ -194,11 +196,12 @@ export default function CabinetPage() {
             <div className="profile-layout">
               <div className="profile-photo-section">
                 <div className="profile-photo">
-                  {profile?.photoUrl ? (
+                  {profile?.photoUrl && !photoError ? (
                     <img
                       src={`${API_BASE}${profile.photoUrl}`}
                       alt="Фото профиля"
                       className="profile-photo__img"
+                      onError={() => setPhotoError(true)}
                     />
                   ) : (
                     <div className="profile-photo__placeholder">

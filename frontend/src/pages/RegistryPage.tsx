@@ -20,6 +20,7 @@ export default function RegistryPage() {
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [brokenPhotos, setBrokenPhotos] = useState<Set<string>>(new Set());
   const searchRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = async (e?: React.FormEvent) => {
@@ -170,11 +171,12 @@ export default function RegistryPage() {
                         key={specialist.userId}
                       >
                         <div className="specialist-card__photo">
-                          {specialist.photoUrl ? (
+                          {specialist.photoUrl && !brokenPhotos.has(specialist.userId) ? (
                             <img
                               src={`${API_BASE}${specialist.photoUrl}`}
                               alt={`${specialist.firstName ?? ''} ${specialist.lastName ?? ''}`}
                               className="specialist-card__photo-img"
+                              onError={() => setBrokenPhotos(prev => new Set(prev).add(specialist.userId))}
                             />
                           ) : (
                             <DefaultAvatar />

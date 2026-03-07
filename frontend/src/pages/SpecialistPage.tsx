@@ -30,6 +30,7 @@ export default function SpecialistPage() {
   const [ratingError, setRatingError] = useState('');
   const [ratingSuccess, setRatingSuccess] = useState('');
 
+  const [photoError, setPhotoError] = useState(false);
   const diplomasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -130,11 +131,12 @@ export default function SpecialistPage() {
             <div className="specialist-detail__card">
               {/* Photo */}
               <div className="specialist-detail__photo">
-                {specialist.photoUrl ? (
+                {specialist.photoUrl && !photoError ? (
                   <img
                     src={`${API_BASE}${specialist.photoUrl}`}
                     alt={fullName}
                     className="specialist-detail__photo-img"
+                    onError={() => setPhotoError(true)}
                   />
                 ) : (
                   <DefaultAvatarLarge />
