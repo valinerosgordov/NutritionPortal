@@ -2,7 +2,7 @@
 set -e
 
 APP_DIR="/opt/nutrition-portal"
-REPO_URL="https://github.com/valinerosgordov/MedWebsiteStanislav.git"
+REPO_URL="https://github.com/valinerosgordov/NutritionPortal.git"
 
 echo "=== Deploying NutritionPortal ==="
 

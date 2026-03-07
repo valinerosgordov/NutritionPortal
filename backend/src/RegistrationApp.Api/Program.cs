@@ -134,6 +134,15 @@ static async Task SeedDataAsync(IServiceProvider services)
 
     // Seed demo nutritionists
     await SeedDemoSpecialistsAsync(userManager, dbContext);
+
+    // One-time fix: clear broken seed PhotoUrl paths that reference non-existent files
+    var brokenProfiles = await dbContext.UserProfiles
+        .Where(p => p.PhotoUrl != null && p.PhotoUrl.StartsWith("/uploads/photos/seed_"))
+        .ToListAsync();
+    foreach (var p in brokenProfiles)
+        p.PhotoUrl = null;
+    if (brokenProfiles.Count > 0)
+        await dbContext.SaveChangesAsync();
 }
 
 static async Task SeedDemoSpecialistsAsync(UserManager<ApplicationUser> userManager, AppDbContext dbContext)
