@@ -149,7 +149,7 @@ static async Task SeedDemoSpecialistsAsync(UserManager<ApplicationUser> userMana
             Address = "г. Москва, ул. Тверская, д. 12",
             Education = "Нутрициология, диетология",
             Workplace = "Клиника здорового питания «НутриЛайф»",
-            PhotoUrl = "/uploads/photos/seed_ivanova.png",
+            PhotoUrl = (string?)null,
             Bio = "Сертифицированный нутрициолог с 12-летним стажем. Специализируюсь на коррекции пищевого поведения, составлении индивидуальных рационов и работе с метаболическим синдромом.",
             Educations = new[]
             {
@@ -166,7 +166,7 @@ static async Task SeedDemoSpecialistsAsync(UserManager<ApplicationUser> userMana
             Address = "г. Санкт-Петербург, Невский пр-т, д. 45",
             Education = "Спортивная нутрициология",
             Workplace = "Центр спортивной медицины «Олимп»",
-            PhotoUrl = "/uploads/photos/seed_petrov.png",
+            PhotoUrl = (string?)null,
             Bio = "Спортивный нутрициолог, работаю с профессиональными атлетами и любителями фитнеса. Помогаю оптимизировать питание для максимальных результатов в спорте.",
             Educations = new[]
             {
@@ -183,7 +183,7 @@ static async Task SeedDemoSpecialistsAsync(UserManager<ApplicationUser> userMana
             Address = "г. Казань, ул. Баумана, д. 78",
             Education = "Клиническая нутрициология",
             Workplace = "Медицинский центр «Здоровье+»",
-            PhotoUrl = "/uploads/photos/seed_sokolova.png",
+            PhotoUrl = (string?)null,
             Bio = "Клинический нутрициолог. Работаю с пациентами с заболеваниями ЖКТ, аллергиями и аутоиммунными состояниями. Индивидуальный подход к каждому клиенту.",
             Educations = new[]
             {
@@ -200,7 +200,7 @@ static async Task SeedDemoSpecialistsAsync(UserManager<ApplicationUser> userMana
             Address = "г. Новосибирск, Красный пр-т, д. 100",
             Education = "Превентивная медицина, нутрициология",
             Workplace = "Институт превентивной медицины",
-            PhotoUrl = "/uploads/photos/seed_kuznetsov.png",
+            PhotoUrl = (string?)null,
             Bio = "Врач-нутрициолог, кандидат медицинских наук. 15 лет практики в области превентивной медицины. Автор более 30 научных публикаций по нутрициологии.",
             Educations = new[]
             {
@@ -218,7 +218,7 @@ static async Task SeedDemoSpecialistsAsync(UserManager<ApplicationUser> userMana
             Address = "г. Екатеринбург, ул. Ленина, д. 55",
             Education = "Нутрициология, фитнес-диетология",
             Workplace = "Онлайн-школа нутрициологии «Balance»",
-            PhotoUrl = "/uploads/photos/seed_volkova.png",
+            PhotoUrl = (string?)null,
             Bio = "Нутрициолог и wellness-коуч. Помогаю людям выстроить здоровые отношения с едой. Веду онлайн-программы по интуитивному питанию и нутритивной поддержке.",
             Educations = new[]
             {
