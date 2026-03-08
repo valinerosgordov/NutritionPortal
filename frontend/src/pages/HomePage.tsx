@@ -1,4 +1,22 @@
 import { Link } from 'react-router-dom';
+import { useRef, useState } from 'react';
+
+const NEWS_ITEMS = [
+  {
+    date: '12.02.2026',
+    title: 'В РФ появилась федерация, которая позволит узаконить отрасль нутрициологии',
+    text: 'Приоритетом в работе организации назвали защиту потребителя и продвижение доказательного подхода в вопросах питания и профилактики заболеваний.',
+    source: 'ТАСС',
+    url: 'https://tass.ru/obschestvo/26401885',
+  },
+  {
+    date: '12.02.2026',
+    title: 'В России зарегистрирована Федерация специалистов превентивной медицины и питания',
+    text: 'Организация планирует участвовать в разработке профстандарта нутрициолога, аккредитации обучения профильных врачей и защите потребителей.',
+    source: 'МедВестник',
+    url: 'https://medvestnik.ru/content/news/v-rossii-zaregistrirovana-federaciya-specialistov-preventivnoi-mediciny-i-pitaniya.html?utm_source=main',
+  },
+];
 
 export default function HomePage() {
   return (
@@ -88,28 +106,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Новости */}
-      <section className="section section--white">
-        <div className="container">
-          <div className="section-header"><span className="badge">Новости</span><h2 className="h2">Лента новостей</h2></div>
-          <div className="news-grid">
-            <article className="news-card">
-              <div className="news-card__image"><img src="/news/tass-federation.jpg" alt="ТАСС" /></div>
-              <div className="news-card__date">12.02.2026</div>
-              <h3 className="news-card__title">В РФ появилась федерация, которая позволит узаконить отрасль нутрициологии</h3>
-              <p className="news-card__text">Приоритетом в работе организации назвали защиту потребителя и продвижение доказательного подхода в вопросах питания и профилактики заболеваний.</p>
-              <div className="news-card__footer"><a href="https://tass.ru/obschestvo/23315285" target="_blank" rel="noopener noreferrer" className="news-card__source news-card__source--link">ТАСС</a></div>
-            </article>
-            <article className="news-card">
-              <div className="news-card__image"><img src="/news/medvestnik-federation.jpg" alt="МедВестник" /></div>
-              <div className="news-card__date">12.02.2026</div>
-              <h3 className="news-card__title">В России зарегистрирована Федерация специалистов превентивного здоровья и питания</h3>
-              <p className="news-card__text">Организация планирует участвовать в разработке профстандарта нутрициолога, аккредитации обучения профильных врачей и защите потребителей.</p>
-              <div className="news-card__footer"><a href="https://medvestnik.ru/content/news/V-Rossii-zaregistrirovana-Federaciya-specialistov-preventivnogo-zdorovya-i-pitaniya.html" target="_blank" rel="noopener noreferrer" className="news-card__source news-card__source--link">МедВестник</a></div>
-            </article>
-          </div>
-        </div>
-      </section>
+      {/* Новости — горизонтальный слайдер */}
+      <NewsSlider />
 
       {/* CTA */}
       <section className="section section--gradient">
@@ -149,5 +147,71 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function NewsSlider() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  const scrollTo = (idx: number) => {
+    if (!trackRef.current) return;
+    const card = trackRef.current.children[idx] as HTMLElement;
+    if (card) {
+      trackRef.current.scrollTo({ left: card.offsetLeft - 24, behavior: 'smooth' });
+      setActive(idx);
+    }
+  };
+
+  const handleScroll = () => {
+    if (!trackRef.current) return;
+    const { scrollLeft, clientWidth } = trackRef.current;
+    const idx = Math.round(scrollLeft / (clientWidth * 0.85));
+    setActive(Math.min(idx, NEWS_ITEMS.length - 1));
+  };
+
+  return (
+    <section className="section section--light news-section">
+      <div className="container">
+        <div className="section-header">
+          <span className="badge">Новости</span>
+          <h2 className="h2">Лента новостей</h2>
+        </div>
+      </div>
+      <div className="news-slider">
+        <div className="news-slider__track" ref={trackRef} onScroll={handleScroll}>
+          {NEWS_ITEMS.map((item, i) => (
+            <article className="news-slide" key={i}>
+              <div className="news-slide__date">{item.date} г.</div>
+              <h3 className="news-slide__title">{item.title}</h3>
+              <p className="news-slide__text">{item.text}</p>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="news-slide__btn"
+              >
+                Перейти к источнику
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
+              <span className="news-slide__source">{item.source}</span>
+            </article>
+          ))}
+        </div>
+        <div className="news-slider__dots">
+          {NEWS_ITEMS.map((_, i) => (
+            <button
+              key={i}
+              className={`news-slider__dot ${active === i ? 'news-slider__dot--active' : ''}`}
+              onClick={() => scrollTo(i)}
+              aria-label={`Новость ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

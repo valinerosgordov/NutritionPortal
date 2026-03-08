@@ -3,19 +3,27 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
     <footer className="footer">
-      <div className="footer__container">
-        <div className="footer__top">
+      {/* Белый блок — логотип, название, ИНН */}
+      <div className="footer__info">
+        <div className="footer__container">
           <div className="footer__brand">
             <div className="footer__logo">
               <img src="/logo.png" alt="Федерация специалистов превентивной медицины и питания" className="footer__logo-img" />
             </div>
-            <p className="footer__org-name">
-              Автономная некоммерческая организация<br />
-              &laquo;Федерация специалистов превентивного здоровья и питания&raquo;
-            </p>
-            <p className="footer__inn">ИНН: 9728169432</p>
+            <div className="footer__brand-text">
+              <p className="footer__org-name">
+                Автономная некоммерческая организация<br />
+                &laquo;Федерация специалистов превентивного здоровья и питания&raquo;
+              </p>
+              <p className="footer__inn">ИНН: 9728169432</p>
+            </div>
           </div>
+        </div>
+      </div>
 
+      {/* Тёмный блок — навигация */}
+      <div className="footer__nav">
+        <div className="footer__container">
           <div className="footer__nav-columns">
             <nav className="footer__nav-col">
               <h4 className="footer__nav-title">Навигация</h4>
@@ -39,11 +47,11 @@ export default function Footer() {
               <Link to="/contacts" className="footer__link">Все контакты</Link>
             </nav>
           </div>
-        </div>
 
-        <div className="footer__bottom">
-          <p>&copy; 2025-2026 Федерация ПМП. Все права защищены.</p>
-          <Link to="/privacy" className="footer__bottom-link">Политика конфиденциальности</Link>
+          <div className="footer__bottom">
+            <p>&copy; 2025-2026 Федерация ПМП. Все права защищены.</p>
+            <Link to="/privacy" className="footer__bottom-link">Политика конфиденциальности</Link>
+          </div>
         </div>
       </div>
     </footer>
