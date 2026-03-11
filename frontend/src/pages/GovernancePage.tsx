@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const governanceMembers = [
   {
-    role: 'Руководитель Федерации',
+    role: 'Президент Федерации',
     lastName: 'Писарева',
     firstName: 'Ирина',
     middleName: 'Александровна',

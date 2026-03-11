@@ -76,7 +76,7 @@ export default function HomePage() {
             <div className="split-section__quote">
               <blockquote>
                 <p>&laquo;Наша цель — устойчивое развитие отрасли и повышение доверия к специалистам с превентивным подходом к здоровью&raquo;</p>
-                <footer><strong>Писарева Ирина Александровна</strong><span>Руководитель Федерации</span></footer>
+                <footer><strong>Писарева Ирина Александровна</strong><span>Президент Федерации</span></footer>
               </blockquote>
             </div>
           </div>
