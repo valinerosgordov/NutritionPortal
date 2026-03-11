@@ -1,35 +1,17 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { searchSpecialists } from '../api/registryApi';
-import { API_BASE } from '../utils/constants';
 
 const governanceMembers = [
   {
     role: 'Руководитель Федерации',
-    name: 'Писарева Ирина Александровна',
-    searchName: 'Писарева',
+    lastName: 'Писарева',
+    firstName: 'Ирина',
+    middleName: 'Александровна',
+    photo: '/images/pisareva.jpg',
     desc: 'Стратегическое развитие, взаимодействие с государственными органами и профессиональным сообществом',
   },
 ];
 
 export default function GovernancePage() {
-  const [photos, setPhotos] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    governanceMembers.forEach(async (member) => {
-      if (!member.searchName) return;
-      try {
-        const { data } = await searchSpecialists(member.searchName);
-        const match = data.find(s =>
-          `${s.lastName} ${s.firstName} ${s.middleName ?? ''}`.trim() === member.name
-        );
-        if (match?.photoUrl) {
-          setPhotos(prev => ({ ...prev, [member.name]: match.photoUrl! }));
-        }
-      } catch { /* ignore */ }
-    });
-  }, []);
-
   return (
     <div className="page-governance">
       {/* Page Header */}
@@ -54,22 +36,18 @@ export default function GovernancePage() {
             {governanceMembers.map((member, i) => (
               <div className="governance-card" key={i}>
                 <div className="governance-card__photo">
-                  {photos[member.name] ? (
-                    <img
-                      src={`${API_BASE}${photos[member.name]}`}
-                      alt={member.name}
-                      className="governance-card__photo-img"
-                    />
-                  ) : (
-                    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="governance-card__photo-svg">
-                      <rect width="120" height="120" rx="60" fill="#edeae5" />
-                      <circle cx="60" cy="45" r="20" fill="#a2bb94" />
-                      <ellipse cx="60" cy="95" rx="35" ry="25" fill="#a2bb94" />
-                    </svg>
-                  )}
+                  <img
+                    src={member.photo}
+                    alt={`${member.lastName} ${member.firstName} ${member.middleName}`}
+                    className="governance-card__photo-img"
+                  />
                 </div>
                 <span className="governance-card__role">{member.role}</span>
-                <h3 className="governance-card__name">{member.name}</h3>
+                <h3 className="governance-card__name">
+                  {member.lastName}<br />
+                  {member.firstName}<br />
+                  {member.middleName}
+                </h3>
                 <p className="governance-card__desc">{member.desc}</p>
               </div>
             ))}
