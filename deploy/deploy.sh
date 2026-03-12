@@ -24,11 +24,15 @@ if [ -f .env ]; then
     export $(grep -v '^#' .env | xargs)
 fi
 
-# Build and deploy
+# Build and deploy (keep certbot volumes intact)
 echo "Building and starting containers..."
 docker compose down --remove-orphans
 docker compose build --no-cache
-docker compose up -d
+docker compose up -d frontend backend
+# Start certbot only if certs exist
+if docker compose run --rm --entrypoint "test -d /etc/letsencrypt/live" certbot 2>/dev/null; then
+    docker compose up -d certbot
+fi
 
 echo "Cleaning up old images..."
 docker image prune -f
