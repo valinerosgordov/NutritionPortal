@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const NEWS_ITEMS = [
   {
@@ -8,6 +8,7 @@ const NEWS_ITEMS = [
     text: 'Приоритетом в работе организации назвали защиту потребителя и продвижение доказательного подхода в вопросах питания и профилактики заболеваний.',
     source: 'ТАСС',
     url: 'https://tass.ru/obschestvo/26401885',
+    image: '/images/news/tass.jpg',
   },
   {
     date: '12.02.2026',
@@ -15,6 +16,7 @@ const NEWS_ITEMS = [
     text: 'Организация планирует участвовать в разработке профстандарта нутрициолога, аккредитации обучения профильных врачей и защите потребителей.',
     source: 'МедВестник',
     url: 'https://medvestnik.ru/content/news/v-rossii-zaregistrirovana-federaciya-specialistov-preventivnoi-mediciny-i-pitaniya.html?utm_source=main',
+    image: '/images/news/medvestnik.jpg',
   },
 ];
 
@@ -106,8 +108,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Новости — горизонтальный слайдер */}
-      <NewsSlider />
+      {/* Новости */}
+      <NewsList />
 
       {/* CTA */}
       <section className="section section--gradient">
@@ -150,65 +152,50 @@ export default function HomePage() {
   );
 }
 
-function NewsSlider() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-
-  const scrollTo = (idx: number) => {
-    if (!trackRef.current) return;
-    const card = trackRef.current.children[idx] as HTMLElement;
-    if (card) {
-      trackRef.current.scrollTo({ left: card.offsetLeft - 24, behavior: 'smooth' });
-      setActive(idx);
-    }
-  };
-
-  const handleScroll = () => {
-    if (!trackRef.current) return;
-    const { scrollLeft, clientWidth } = trackRef.current;
-    const idx = Math.round(scrollLeft / (clientWidth * 0.85));
-    setActive(Math.min(idx, NEWS_ITEMS.length - 1));
-  };
+function NewsList() {
+  const [brokenImages, setBrokenImages] = useState<Set<number>>(new Set());
 
   return (
-    <section className="section section--light news-section">
+    <section className="section section--light">
       <div className="container">
         <div className="section-header">
           <span className="badge">Новости</span>
           <h2 className="h2">Лента новостей</h2>
         </div>
-      </div>
-      <div className="news-slider">
-        <div className="news-slider__track" ref={trackRef} onScroll={handleScroll}>
+        <div className="news-list">
           {NEWS_ITEMS.map((item, i) => (
-            <article className="news-slide" key={i}>
-              <div className="news-slide__date">{item.date} г.</div>
-              <h3 className="news-slide__title">{item.title}</h3>
-              <p className="news-slide__text">{item.text}</p>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="news-slide__btn"
-              >
-                Перейти к источнику
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </a>
-              <span className="news-slide__source">{item.source}</span>
-            </article>
-          ))}
-        </div>
-        <div className="news-slider__dots">
-          {NEWS_ITEMS.map((_, i) => (
-            <button
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="news-card"
               key={i}
-              className={`news-slider__dot ${active === i ? 'news-slider__dot--active' : ''}`}
-              onClick={() => scrollTo(i)}
-              aria-label={`Новость ${i + 1}`}
-            />
+            >
+              {item.image && !brokenImages.has(i) && (
+                <div className="news-card__image">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    onError={() => setBrokenImages(prev => new Set(prev).add(i))}
+                  />
+                </div>
+              )}
+              <div className="news-card__body">
+                <div className="news-card__meta">
+                  <span className="news-card__date">{item.date} г.</span>
+                  <span className="news-card__source">{item.source}</span>
+                </div>
+                <h3 className="news-card__title">{item.title}</h3>
+                <p className="news-card__text">{item.text}</p>
+                <span className="news-card__link">
+                  Читать далее
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </div>
+            </a>
           ))}
         </div>
       </div>
