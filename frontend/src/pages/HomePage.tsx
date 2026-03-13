@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const NEWS_ITEMS = [
   {
@@ -8,7 +8,7 @@ const NEWS_ITEMS = [
     text: 'Приоритетом в работе организации назвали защиту потребителя и продвижение доказательного подхода в вопросах питания и профилактики заболеваний.',
     source: 'ТАСС',
     url: 'https://tass.ru/obschestvo/26401885',
-    image: '/images/news/tass.jpg',
+    image: '/images/news/nutrition-health.jpg',
   },
   {
     date: '12.02.2026',
@@ -16,7 +16,23 @@ const NEWS_ITEMS = [
     text: 'Организация планирует участвовать в разработке профстандарта нутрициолога, аккредитации обучения профильных врачей и защите потребителей.',
     source: 'МедВестник',
     url: 'https://medvestnik.ru/content/news/v-rossii-zaregistrirovana-federaciya-specialistov-preventivnoi-mediciny-i-pitaniya.html?utm_source=main',
-    image: '/images/news/medvestnik.jpg',
+    image: '/images/news/medicine-research.jpg',
+  },
+  {
+    date: '05.03.2026',
+    title: 'Федерация запускает программу сертификации нутрициологов',
+    text: 'Новая программа сертификации позволит специалистам подтвердить свою квалификацию и войти в единый реестр проверенных нутрициологов.',
+    source: 'Федерация',
+    url: '#',
+    image: '/images/news/certification.jpg',
+  },
+  {
+    date: '10.03.2026',
+    title: 'Первый всероссийский форум превентивного здоровья пройдёт в Москве',
+    text: 'Форум объединит ведущих экспертов в области нутрициологии, превентивной медицины и здорового образа жизни для обсуждения актуальных вопросов отрасли.',
+    source: 'Федерация',
+    url: '#',
+    image: '/images/news/forum-conference.jpg',
   },
 ];
 
@@ -154,6 +170,14 @@ export default function HomePage() {
 
 function NewsList() {
   const [brokenImages, setBrokenImages] = useState<Set<number>>(new Set());
+  const [page, setPage] = useState(0);
+  const perPage = 2;
+  const totalPages = Math.ceil(NEWS_ITEMS.length / perPage);
+
+  const goPrev = useCallback(() => setPage(p => Math.max(0, p - 1)), []);
+  const goNext = useCallback(() => setPage(p => Math.min(totalPages - 1, p + 1)), [totalPages]);
+
+  const visibleItems = NEWS_ITEMS.slice(page * perPage, page * perPage + perPage);
 
   return (
     <section className="section section--light">
@@ -162,41 +186,92 @@ function NewsList() {
           <span className="badge">Новости</span>
           <h2 className="h2">Лента новостей</h2>
         </div>
-        <div className="news-list">
-          {NEWS_ITEMS.map((item, i) => (
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="news-card"
-              key={i}
-            >
-              {item.image && !brokenImages.has(i) && (
-                <div className="news-card__image">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    onError={() => setBrokenImages(prev => new Set(prev).add(i))}
+
+        <div className="news-carousel">
+          <div className="news-carousel__grid">
+            {visibleItems.map((item, i) => {
+              const globalIndex = page * perPage + i;
+              return (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="news-carousel__card"
+                  key={globalIndex}
+                >
+                  {item.image && !brokenImages.has(globalIndex) && (
+                    <div className="news-carousel__image">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        onError={() => setBrokenImages(prev => new Set(prev).add(globalIndex))}
+                      />
+                    </div>
+                  )}
+                  <div className="news-carousel__body">
+                    <div className="news-carousel__meta">
+                      <span className="news-carousel__date">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="14" height="14">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/>
+                          <line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        {item.date}
+                      </span>
+                      <span className="news-carousel__source">{item.source}</span>
+                    </div>
+                    <h3 className="news-carousel__title">{item.title}</h3>
+                    <p className="news-carousel__text">{item.text}</p>
+                    <span className="news-carousel__link">
+                      Читать далее
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="news-carousel__nav">
+              <button
+                className="news-carousel__btn"
+                onClick={goPrev}
+                disabled={page === 0}
+                aria-label="Предыдущие новости"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+
+              <div className="news-carousel__dots">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    className={`news-carousel__dot${i === page ? ' news-carousel__dot--active' : ''}`}
+                    onClick={() => setPage(i)}
+                    aria-label={`Страница ${i + 1}`}
                   />
-                </div>
-              )}
-              <div className="news-card__body">
-                <div className="news-card__meta">
-                  <span className="news-card__date">{item.date} г.</span>
-                  <span className="news-card__source">{item.source}</span>
-                </div>
-                <h3 className="news-card__title">{item.title}</h3>
-                <p className="news-card__text">{item.text}</p>
-                <span className="news-card__link">
-                  Читать далее
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </span>
+                ))}
               </div>
-            </a>
-          ))}
+
+              <button
+                className="news-carousel__btn"
+                onClick={goNext}
+                disabled={page === totalPages - 1}
+                aria-label="Следующие новости"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
